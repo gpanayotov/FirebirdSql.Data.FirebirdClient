@@ -196,6 +196,18 @@ namespace FirebirdSql.Data.Services
 			Close();
 		}
 
+		public void NoLinger()
+		{
+			StartSpb = new ServiceParameterBuffer();
+			StartSpb.Append(IscCodes.isc_action_svc_properties);
+			StartSpb.Append(IscCodes.isc_spb_dbname, Database);
+			StartSpb.Append(IscCodes.isc_spb_options, IscCodes.isc_spb_prp_nolinger);
+
+			Open();
+			StartTask();
+			Close();
+		}
+
 		byte FbShutdownOnlineModeToIscCode(FbShutdownOnlineMode mode)
 		{
 			switch (mode)
@@ -209,7 +221,7 @@ namespace FirebirdSql.Data.Services
 				case FbShutdownOnlineMode.Full:
 					return IscCodes.isc_spb_prp_sm_full;
 				default:
-					throw new ArgumentOutOfRangeException();
+					throw new ArgumentOutOfRangeException(nameof(mode));
 			}
 		}
 	}

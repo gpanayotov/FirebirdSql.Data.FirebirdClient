@@ -120,14 +120,19 @@ namespace FirebirdSql.EntityFrameworkCore.Firebird.Update.Internal
 			}
 			if (anyRead)
 			{
-				commandStringBuilder.AppendLine();
-				commandStringBuilder.Append("RETURNING ");
-				commandStringBuilder.AppendJoin(readOperations, (b, e) =>
-				{
-					b.Append(SqlGenerationHelper.DelimitIdentifier(e.ColumnName));
-					b.Append(" INTO :");
-					b.Append(SqlGenerationHelper.DelimitIdentifier(e.ColumnName));
-				}, ", ");
+                commandStringBuilder.AppendLine();
+                commandStringBuilder.Append("RETURNING ");
+
+                commandStringBuilder.AppendJoin(readOperations, (b, e) =>
+                {
+                    b.Append(SqlGenerationHelper.DelimitIdentifier(e.ColumnName));
+                }, ", ");
+				commandStringBuilder.Append(" INTO ");
+                commandStringBuilder.AppendJoin(readOperations, (b, e) =>
+                {
+                    b.Append(" :");
+                    b.Append(SqlGenerationHelper.DelimitIdentifier(e.ColumnName));
+                }, ", ");
 			}
 			commandStringBuilder.Append(SqlGenerationHelper.StatementTerminator).AppendLine();
 			if (!anyRead)
